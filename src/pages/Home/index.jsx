@@ -8,7 +8,7 @@ export function Home() {
 
   const [studentName, setstudentName] = useState('')
   const [students, setstudents] = useState([])
-  const [user, setUser] = useState({name: '', avatar: ''})
+  const [user, setUser] = useState({name: '', avatar: '', location: ''})
 
   function handleAddStudent() {
     const newStudent = {
@@ -25,15 +25,21 @@ export function Home() {
   }
 
   //executado automaticamente assim que a interface for renderizada
-  useEffect(() => {
+  useEffect(() => { //useEffect não aceita async, para usar, é necessário criar uma function
+    
     // corpo do useEffect(açoes ou aquilo que quero que execute)
-    fetch('https://api.github.com/users/pceolato')
-      .then(response => response.json())
-      .then(data => {
-        setUser({
-          name: data.name,
-          avatar: data.avatar_url})
+   async function fetchData() { 
+     const response = await fetch('https://api.github.com/users/pceolato') //fetch = padrão para fazer requisições http
+     const data = await response.json()
+    
+     setUser({
+        name: data.name,
+        avatar: data.avatar_url,
+        location: data.location,
       })
+    }
+
+   fetchData()
   }, [])
 
   return (
@@ -42,7 +48,10 @@ export function Home() {
       <h1>Lista de Presença</h1>
       
       <div>
-        <strong>{user.name}</strong>
+        <div>
+          <strong>{user.name}</strong>
+          <small>{user.location}</small>
+        </div>
         <img src={user.avatar} alt="Foto de Perfil" />
       </div>
      </header>
