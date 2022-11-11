@@ -2,13 +2,25 @@
 import React, { useState, useEffect } from 'react'; //Hooks = use(Hook) -> useState
 import './styles.css';
 
-import {Card} from '../../components/Card'
+import {Card, CardProps} from '../../components/Card'
+
+interface ProfileResponse {
+  name: string;
+  avatar_url: string;
+  location: string;
+}
+
+interface User {
+  name: string;
+  avatar: string;
+  location: string;
+}
 
 export function Home() {
 
   const [studentName, setstudentName] = useState('')
-  const [students, setstudents] = useState([])
-  const [user, setUser] = useState({name: '', avatar: '', location: ''})
+  const [students, setstudents] = useState<CardProps[]>([])
+  const [user, setUser] = useState<User>({} as User)
 
   function handleAddStudent() {
     const newStudent = {
@@ -25,12 +37,13 @@ export function Home() {
   }
 
   //executado automaticamente assim que a interface for renderizada
-  useEffect(() => { //useEffect não aceita async, para usar, é necessário criar uma function
-    
+  useEffect(() => { 
+    //useEffect não aceita async, para usar, é necessário criar uma function
+ 
     // corpo do useEffect(açoes ou aquilo que quero que execute)
    async function fetchData() { 
      const response = await fetch('https://api.github.com/users/pceolato') //fetch = padrão para fazer requisições http
-     const data = await response.json()
+     const data = await response.json() as ProfileResponse
     
      setUser({
         name: data.name,
